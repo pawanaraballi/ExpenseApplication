@@ -93,6 +93,32 @@ admin.get('/removeExpense', function (req, res,next) {
 });
 
 
+admin.get('/updateExpense', function (req, res,next) {
+
+    verify_token.verify(req.session.token,function(err, decoded) {
+
+        console.log(decoded);
+        if(!err && decoded.tag == 'admin'){
+            console.log(decoded.user);
+            user = decoded.user;
+            console.log(req.query.description);
+            data = {
+                username:req.query.username,
+                description:req.query.description,
+                amount:req.query.amount
+            }
+            console.log(data);
+            res.send('0');
+        }else{
+            console.log(err);
+            user = null ;
+            req.session.token = null ;
+            res.render('pages/logout',{statusCode:200 , message : 'invalid session please login'});
+
+        }
+    });
+});
+
 admin.post('/add', function (req, res,next) {
 console.log("Inside admin add");
 console.log(req.body.email);
@@ -100,7 +126,6 @@ console.log(req.body.email);
                 if(model ==  null){
                     var data = req.body;
                     console.log(data);
-                    hashedPassword = passwordHash.generate(data.password);
                     var login_details = {
                         username : data.email,
                         password : data.password,

@@ -106,28 +106,7 @@ user.get('/updateExpense', function (req, res,next) {
                 amount:req.query.amount
             }
             console.log(data);
-            res.render('pages/updateExpense',{data : data});
-        }else{
-            console.log(err);
-            user = null ;
-            req.session.token = null ;
-            res.render('pages/logout',{statusCode:200 , message : 'invalid session please login'});
-
-        }
-    });
-});
-
-user.get('/updateExpenseUtil', function (req, res,next) {
-
-    verify_token.verify(req.session.token,function(err, decoded) {
-
-        console.log(decoded);
-        if(!err && decoded.tag == 'user'){
-            console.log(decoded.user);
-            user = decoded.user;
-            console.log(req.query);
-            data = req.query;
-            res.render('pages/updateExpense',{data : data});
+            res.send('0');
         }else{
             console.log(err);
             user = null ;
