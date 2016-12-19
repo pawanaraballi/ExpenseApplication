@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Update Expense</title>
+   <script type="text/javascript" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<script>
+    var data = <%-data%>
+    console.log(data);
+    var app = angular.module('myApp', []);
+    app.controller('myController', function($scope, $http) {
+        $scope.username = data.username;
+        $scope.description = data.description;
+        $scope.amount = data.amount;
+        $scope.datetimee = data.datetimee;
+    });
+</script>
+
+<style>
+    .navbar {
+        margin-bottom: 0;
+        background-color: #006600;
+        z-index: 9999;
+        border: 0;
+        font-size: 12px !important;
+        line-height: 1.42857143 !important;
+        letter-spacing: 4px;
+        border-radius: 0;
+        font-family: Montserrat, sans-serif;
+    }
+    .navbar li a, .navbar .navbar-brand {
+        color: #fff !important;
+    }
+    .navbar-nav li a:hover, .navbar-nav li.active a {
+        color: #006600 !important;
+        background-color: #fff !important;
+    }
+    .navbar-default .navbar-toggle {
+        border-color: transparent;
+        color: #fff !important;
+    }
+    h2 {
+        font-size: 24px;
+        text-transform: uppercase;
+        color: #303030;
+        font-weight: 600;
+        margin-bottom: 30px;
+    }
+    h4 {
+        font-size: 19px;
+        line-height: 1.375em;
+        color: #303030;
+        font-weight: 400;
+        margin-bottom: 30px;
+    }
+    .jumbotron {
+        background-color: #006600;
+        color: #fff;
+        padding: 25px 25px;
+        font-family: Montserrat, sans-serif;
+    }
+</style>
+
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/user/updateExpense"> Update Expense</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="jumbotron text-center">
+    <h1>Expense Form</h1>
+    <p>Enter the details and Submit</p>
+</div>
+
+<div class="container" ng-app="myApp" ng-controller="myController">
+    <h2 class="text-center">Update the Expense details</h2>
+    <form class="form-horizontal" action="/user" method="post">
+        <div class="form-group">
+            <label class="col-sm-4 control-label">User Name:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="username" type="text">
+            </div>
+            <label class="col-sm-4 control-label"></label>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">Description:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="description" type="text">
+            </div>
+            <label class="col-sm-4 control-label"></label>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">Amount:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="amount" type="number">
+            </div>
+            <label class="col-sm-4 control-label"></label>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">Last Modified:</label>
+            <div class="col-sm-4">
+                <input class="form-control" name="datetimee" type="datetime-local">
+            </div>
+            <label class="col-sm-4 control-label"></label>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button id="updateExpense" class="btn btn-lg btn-primary btn-block" value="updateexpense" type="submit">Update</button>
+            </div>
+            <div class="col-sm-5"></div>
+        </div>
+
+    </form>
+</div>
+
+
+</body>
+</html>
+

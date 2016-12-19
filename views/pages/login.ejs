@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <!--Style and Scripts-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
+
+</head>
+<style>
+    html {
+
+    }
+    body {
+        padding-top: 40px;
+        padding-bottom: 40px;
+        background: url(http://www.clipartkid.com/images/211/dollar-sign-png-f2WStr-clipart.jpeg) no-repeat center fixed;
+        background-size: cover;
+    }
+
+    .form-signin {
+        max-width: 350px;
+        padding: 20px;
+        margin: 0 auto;
+    }
+    .form-signin .form-signin-heading,
+    .form-signin .checkbox {
+        margin-bottom: 20px;
+    }
+    .form-signin .checkbox {
+        font-weight: normal;
+    }
+    .form-signin .form-control {
+        position: relative;
+        height: auto;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        padding: 15px;
+        font-size: 20px;
+    }
+    .form-signin .form-control:focus {
+        z-index: 2;
+    }
+    .form-signin input[type="email"] {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+    .form-signin input[type="password"] {
+        margin-bottom: 15px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+</style>
+<body>
+
+<div class="container">
+
+    <form action="/login" method="get" class="form-signin-admin" id="login_form">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-4">
+        <h1 class="form-signin-heading text-center">Login here!</h1>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" name="username" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+        <% if( typeof error !== 'undefined' ){
+        %>
+        <p><%= error%></p>
+        <%
+        }%>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+        <button id="login" class="btn btn-lg btn-primary btn-block" value="login user" type="submit">Sign in</button>
+        </div>
+        <div class="col-sm-4"></div>
+    </form>
+
+</div>
+</body>
+</html>

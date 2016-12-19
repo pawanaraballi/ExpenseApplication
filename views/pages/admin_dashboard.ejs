@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:filter="http://www.w3.org/1999/xhtml">
+<head>
+  <script type="text/javascript" language="javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://use.fontawesome.com/0a0307d764.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="../css/xeditable.css" rel="stylesheet">
+  <script src="../js/xeditable.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-3d.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.2.0/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+
+  <title>Admin Page</title>
+
+  <script>
+
+    var d = <%-data%>;
+    var app = angular.module("myAdmin", ["xeditable"]);
+
+    app.run(function(editableOptions) {
+      editableOptions.theme = 'bs3';
+    });
+    app.controller('AdminEditableRowCtrl', function($scope, $filter, $http) {
+      $scope.pawan = d;
+
+
+      $scope.monthExpenses = [];
+      $scope.dailyExpenses = [];
+      console.log($scope.pawan);
+      $scope.user = d[0].username;
+      $scope.dailyMetaData = []
+
+      for (var i = 0; i < 31; i++) {
+        $scope.dailyMetaData[i] = i + 1 + "";
+        $scope.dailyExpenses[i] = 0;
+      }
+      for (var i = 0; i < 12; i++) {
+        $scope.monthExpenses[i] = 0;
+      }
+
+      for (var i = 0; i < $scope.pawan.length; i++) {
+        $scope.splitdata = $scope.pawan[i].datetimee.split("-");
+        $scope.secondsplit = $scope.splitdata[2].split("T");
+        $scope.monthExpenses[$scope.splitdata[1] -1] = $scope.monthExpenses[$scope.splitdata[1] -1] + $scope.pawan[i].amount;
+        $scope.dailyExpenses[$scope.secondsplit[0] -1] = $scope.dailyExpenses[$scope.secondsplit[0] -1] + $scope.pawan[i].amount;
+      }
+
+      console.log($scope.monthExpenses);
+
+    //charts
+
+    Highcharts.chart('containerCurrMonthDaily', {
+        chart: {
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 10,
+                beta: 25,
+                depth: 70
+            }
+        },
+        title: {
+            text: 'Daily Expense Chart'
+        },
+        plotOptions: {
+            column: {
+                depth: 25
+            }
+        },
+        xAxis: {
+            categories: $scope.dailyMetaData
+        },
+        yAxis: {
+            title: {
+                text: "Sum of Amount Spent"
+            }
+        },
+        series: [{
+            name: 'Expenses',
+            data: $scope.dailyExpenses
+        }]
+    });
+
+
+    Highcharts.chart('containerMonthly', {
+        chart: {
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 10,
+                beta: 25,
+                depth: 70
+            }
+        },
+        title: {
+            text: 'Monthly Expense Chart'
+        },
+        subtitle: {
+            text: 'Notice the difference between a 0 value and a null point'
+        },
+        plotOptions: {
+            column: {
+                depth: 25
+            }
+        },
+        xAxis: {
+            categories: ['1','2','3','4','5','6','7','8','9','10','11','12']
+        },
+        yAxis: {
+            title: {
+                text: "Sum of Amount Spent"
+            }
+        },
+        series: [{
+            name: 'Expenses',
+            data: $scope.monthExpenses
+        }]
+    });
+
+
+      $scope.user = d[0].username;
+
+
+      $scope.saveExpenses = function(data) {
+    //$scope.user not updated yet
+    angular.extend(data);
+    return $http.post('/admin/addExpenses', data);
+  };
+
+  // remove user
+  $scope.removeExpense = function(index) {
+    console.log("removeExpense");
+    data = $scope.pawan[index].description;
+    user = $scope.pawan[index].username;
+    $scope.pawan.splice(index, 1);
+    window.location = '/admin/removeExpense?ss=' + data+'&user='+user;
+  };
+
+// add user
+  $scope.addUser = function() {
+    console.log($scope.user);
+    $scope.inserted = {
+      username:$scope.user,
+      description: '',
+      amount: null,
+      datetimee:""
+    };
+    $scope.pawan.push($scope.inserted);
+  };
+});
+</script>
+
+</head>
+
+<style>
+  body {
+    font: 400 15px Lato, sans-serif;
+    line-height: 1.8;
+    color: #818181;
+  }
+  h1{
+    font-size: 30px;
+    text-transform: uppercase;
+    color: #006600;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+  .navbar {
+    margin-bottom: 0;
+    background-color: #006600;
+    z-index: 9999;
+    border: 0;
+    font-size: 12px !important;
+    line-height: 1.42857143 !important;
+    letter-spacing: 4px;
+    border-radius: 0;
+    font-family: Montserrat, sans-serif;
+  }
+  .navbar li a, .navbar .navbar-brand {
+    color: #fff !important;
+  }
+  .navbar-nav li a:hover, .navbar-nav li.active a {
+    color: #006600 !important;
+    background-color: #fff !important;
+  }
+  .navbar-default .navbar-toggle {
+    border-color: transparent;
+    color: #fff !important;
+  }
+  .nav-item {
+    color: #fff !important;
+  }
+  h2 {
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #303030;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+  h4 {
+    font-size: 19px;
+    line-height: 1.375em;
+    color: #303030;
+    font-weight: 400;
+    margin-bottom: 30px;
+  }
+  .jumbotron {
+    background-color: #006600;
+    color: #fff;
+    padding: 25px 25px;
+    font-family: Montserrat, sans-serif;
+  }
+</style>
+
+<body>
+
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <a class="navbar-brand" href="/user/home">Admin Dashboard</a>
+    <div id="navbar">
+      <nav class="nav navbar-nav float-xs-left">
+        <a class="nav-item nav-link" href="/logout">Logout</a>
+      </nav>
+    </div>
+  </nav>
+
+
+
+  <div class="container-fluid">
+  <br><br><br>
+
+<h1 class="text-lg-center">Dashboard</h1>
+<div class= "row">
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Monthly</a></li>
+    <li><a data-toggle="tab" href="#menu1">Daily</a></li>
+  </ul>
+
+    <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <div id="containerMonthly" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+    <div id="menu1" class="tab-pane fade">
+      <div id="containerCurrMonthDaily" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+  </div>
+  </div>
+  <br><br>
+<h1 class="text-lg-center">Expenses Details</h1>
+
+    <div class="row">
+      <div class="main">
+        <div ng-app = "myAdmin" ng-controller="AdminEditableRowCtrl">
+          <table class="table table-bordered table-hover table-condensed">
+            <tr style="font-weight: bold">
+              <td style="width:35%">Username</td>
+              <td style="width:35%">Description</td>
+              <td style="width:20%">Amount</td>
+              <td style="width:20%">Modified Date</td>
+              <td style="width:25%">Edit</td>
+            </tr>
+            <tr ng-repeat="user in pawan">
+              <td>
+                <!-- editable username (text with validation) -->
+                <span editable-text="user.username" e-name="username" e-form="rowform">
+                  {{ user.username }}
+                </span>
+              </td>
+              <td>
+                <!-- editable username (text with validation) -->
+                <span editable-text="user.description" e-name="description" e-form="rowform">
+                  {{ user.description || 'empty' }}
+                </span>
+              </td>
+              <td>
+                <!-- editable status (select-local) -->
+                <span editable-number="user.amount" e-name="amount" e-form="rowform" >
+                  {{ user.amount || 'empty' }}
+                </span>
+              </td>
+              <td>
+                <!-- editable group (select-remote) -->
+                <span editable-combodate="user.datetimee" e-name="datetimee" e-form="rowform">
+                  {{ user.datetimee || 'empty' }}
+                </span>
+              </td>
+              <td style="white-space: nowrap">
+                <!-- form -->
+                <form editable-form name="rowform" onbeforesave="saveExpenses($data)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
+                  <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                    save
+                  </button>
+                  <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                    cancel
+                  </button>
+                </form>
+                <div class="buttons" ng-show="!rowform.$visible">
+                  <button type="button" class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                  <button type="button" class="btn btn-danger" ng-click="removeExpense($index)">delete</button>
+                </div>  
+              </td>
+            </tr>
+          </table>
+
+          <button type="button" class="btn btn-default" ng-click="addUser()">Add New Expense</button>
+        </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
