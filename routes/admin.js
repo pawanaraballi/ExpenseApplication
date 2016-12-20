@@ -3,21 +3,21 @@ var express = require('express');
 var admin = express.Router();
 var mysql = require('../models/mysql');
 var verify_token = require('../models/verify');
-var passwordHash = require('password-hash');
+//var passwordHash = require('password-hash');
 //var pass = require('pwd');
 
+//Landing page or Dashboard
 admin.get('/home', function (req, res,next) {
 
     verify_token.verify(req.session.token,function(err, decoded) {
 
         console.log(decoded);
         if(!err && decoded.tag == 'admin'){
-            
             user = decoded.user;
             mysql.getAllExpenses(function(model) {
                 console.log("I am here" + model);
                 var data = JSON.stringify(model);
-                res.render('pages/admin_dashboard',{data : data});
+                res.render('pages/admin_dashboard',{data : {data:data, user: user}});
             });
         }else{
             console.log(err);
@@ -29,7 +29,7 @@ admin.get('/home', function (req, res,next) {
     });
 });
 
-
+//Add New Expense
 admin.post('/addExpenses', function (req, res,next) {
     console.log('addExpenses');
     verify_token.verify(req.session.token,function(err, decoded) {
@@ -60,7 +60,7 @@ admin.post('/addExpenses', function (req, res,next) {
 });
 
 
-
+//Remove Expenses
 admin.get('/removeExpense', function (req, res,next) {
     console.log('removeExpense');
     verify_token.verify(req.session.token,function(err, decoded) {
@@ -92,7 +92,7 @@ admin.get('/removeExpense', function (req, res,next) {
     });
 });
 
-
+//Update Expense 
 admin.get('/updateExpense', function (req, res,next) {
 
     verify_token.verify(req.session.token,function(err, decoded) {
@@ -119,6 +119,7 @@ admin.get('/updateExpense', function (req, res,next) {
     });
 });
 
+//Add new user from postman
 admin.post('/add', function (req, res,next) {
 console.log("Inside admin add");
 console.log(req.body.email);

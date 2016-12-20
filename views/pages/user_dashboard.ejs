@@ -137,12 +137,12 @@
     window.location = '/user/removeExpense?ss=' + data;
   };
 
-  // update user
+/*  // update user
   $scope.updateExpense = function(index) {
     console.log(index);
     $scope.oodata = $scope.pawan[index];
-    window.location = '/user/updateExpense?username='+$scope.oodata.username+'&description='+$scope.oodata.description+'&amount='+$scope.oodata.amount;
-  };
+    window.location = '/supporter/updateAppointment?username=' + $scope.oodata.username + "&datetimee=" + $scope.oodata.datetimee;
+  };*/
 
   // add user
   $scope.addUser = function() {
@@ -299,9 +299,9 @@
                   <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
                     save
                   </button>
-                  <button type="button" ng-disabled="rowform.$waiting" ng-click="updateExpense($index)" class="btn btn-primary">
+<!--                   <button type="button" ng-disabled="rowform.$waiting" ng-click="updateExpense($index)" class="btn btn-primary">
                     update
-                  </button>
+                  </button> -->
                   <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
                     cancel
                   </button>

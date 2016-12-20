@@ -22,21 +22,45 @@
 
   <script>
 
-    var d = <%-data%>;
+    var d = <%-data.data%>;
+
+
     var app = angular.module("myAdmin", ["xeditable"]);
 
     app.run(function(editableOptions) {
       editableOptions.theme = 'bs3';
     });
     app.controller('AdminEditableRowCtrl', function($scope, $filter, $http) {
+          console.log(d);
+    //console.log(u);
       $scope.pawan = d;
+      $scope.manipulatedData = [];
+
+      for (var i = 0; i < $scope.pawan.length; i++) {
+        data = {
+          username: $scope.pawan[i].username,
+          description: $scope.pawan[i].description,
+          amount: $scope.pawan[i].amount,
+          datetimee: $scope.pawan[i].datetimee,
+          user: ''
+        };
+        if("araballi.pawan@gmail.com" == $scope.pawan[i].username){
+          data.user = true;
+          $scope.manipulatedData[i] = data;
+        }else{
+          data.user = false;
+          $scope.manipulatedData[i] =data;
+        }
+      }
+
+      console.log($scope.manipulatedData);
 
 
       $scope.monthExpenses = [];
       $scope.dailyExpenses = [];
       console.log($scope.pawan);
       $scope.user = d[0].username;
-      $scope.dailyMetaData = []
+      $scope.dailyMetaData = [];
 
       for (var i = 0; i < 31; i++) {
         $scope.dailyMetaData[i] = i + 1 + "";
@@ -266,7 +290,7 @@
               <td style="width:20%">Modified Date</td>
               <td style="width:25%">Edit</td>
             </tr>
-            <tr ng-repeat="user in pawan">
+            <tr ng-repeat="user in manipulatedData">
               <td>
                 <!-- editable username (text with validation) -->
                 <span editable-text="user.username" e-name="username" e-form="rowform">
@@ -291,7 +315,7 @@
                   {{ user.datetimee || 'empty' }}
                 </span>
               </td>
-              <td style="white-space: nowrap">
+              <td style="white-space: nowrap" ng-show="{{user.user}}">
                 <!-- form -->
                 <form editable-form name="rowform" onbeforesave="saveExpenses($data)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
                   <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">

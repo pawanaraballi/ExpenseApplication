@@ -5,6 +5,7 @@ var mysql = require('../models/mysql');
 var verify_token = require('../models/verify');
 var passwordHash = require('password-hash');
 
+//Landing page or Dashboard
 user.get('/home', function (req, res,next) {
 
     verify_token.verify(req.session.token,function(err, decoded) {
@@ -28,28 +29,33 @@ user.get('/home', function (req, res,next) {
     });
 });
 
-
+//Add New Expense
 user.post('/addExpenses', function (req, res,next) {
     console.log('addExpenses');
     verify_token.verify(req.session.token,function(err, decoded) {
         if (!err && decoded.tag == 'user') {
             amt = req.body.amount.toPrecision(4);
-            var data = {
-              username:req.body.username,
-              description: req.body.description,
-              amount: amt,
-              datetimee:req.body.datetimee
-            };
-            data.username = decoded.user;
-            mysql.putUserExpense(data,function (model) {
-                if(model == null){
-                    res.json({statusCode : 200 , message:"data not stored"})
-                }else{
-                    res.json({statusCode : 200 , message:"data stored"})
-                    res.render('pages/user_dashboard');
-                }
-            })
-
+            if (req.body.username == decoded.user){
+                var data = {
+                  username:req.body.username,
+                  description: req.body.description,
+                  amount: amt,
+                  datetimee:req.body.datetimee
+                };
+                data.username = decoded.user;
+                mysql.putUserExpense(data,function (model) {
+                    if(model == null){
+                        res.json({statusCode : 200 , message:"data not stored"})
+                    }else{
+                        res.json({statusCode : 200 , message:"data stored"})
+                        res.render('pages/user_dashboard');
+                    }
+                })
+            }
+            else {
+            console.log(err);
+            res.json({statusCode: 200, message: " invalid user ", data: null});
+            }
         }
         else {
             console.log(err);
@@ -58,7 +64,7 @@ user.post('/addExpenses', function (req, res,next) {
     });
 });
 
-
+//Remove Expense
 user.get('/removeExpense', function (req, res,next) {
 
     verify_token.verify(req.session.token,function(err, decoded) {
@@ -90,7 +96,7 @@ user.get('/removeExpense', function (req, res,next) {
     });
 });
 
-
+//Update Expense
 user.get('/updateExpense', function (req, res,next) {
 
     verify_token.verify(req.session.token,function(err, decoded) {
@@ -117,6 +123,7 @@ user.get('/updateExpense', function (req, res,next) {
     });
 });
 
+//Add new user from postman
 user.post('/add', function (req, res,next) {
 console.log("Inside admin add");
 console.log(req.body.email);
