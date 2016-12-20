@@ -21,9 +21,7 @@
   <title>Admin Page</title>
 
   <script>
-
     var d = <%-data.data%>;
-
 
     var app = angular.module("myAdmin", ["xeditable"]);
 
@@ -70,11 +68,13 @@
         $scope.monthExpenses[i] = 0;
       }
 
-      for (var i = 0; i < $scope.pawan.length; i++) {
-        $scope.splitdata = $scope.pawan[i].datetimee.split("-");
-        $scope.secondsplit = $scope.splitdata[2].split("T");
-        $scope.monthExpenses[$scope.splitdata[1] -1] = $scope.monthExpenses[$scope.splitdata[1] -1] + $scope.pawan[i].amount;
-        $scope.dailyExpenses[$scope.secondsplit[0] -1] = $scope.dailyExpenses[$scope.secondsplit[0] -1] + $scope.pawan[i].amount;
+      for (var i = 0; i < $scope.manipulatedData.length; i++) {
+        if($scope.manipulatedData[i].user == true){
+          $scope.splitdata = $scope.manipulatedData[i].datetimee.split("-");
+          $scope.secondsplit = $scope.splitdata[2].split("T");
+          $scope.monthExpenses[$scope.splitdata[1] -1] = $scope.monthExpenses[$scope.splitdata[1] -1] + $scope.manipulatedData[i].amount;
+          $scope.dailyExpenses[$scope.secondsplit[0] -1] = $scope.dailyExpenses[$scope.secondsplit[0] -1] + $scope.manipulatedData[i].amount;
+        }
       }
 
       console.log($scope.monthExpenses);

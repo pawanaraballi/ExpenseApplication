@@ -17,7 +17,7 @@ admin.get('/home', function (req, res,next) {
             mysql.getAllExpenses(function(model) {
                 console.log("I am here" + model);
                 var data = JSON.stringify(model);
-                res.render('pages/admin_dashboard',{data : {data:data, user: user}});
+                res.render('pages/admin_dashboard',{data : {data:data, u: user}});
             });
         }else{
             console.log(err);
@@ -35,22 +35,27 @@ admin.post('/addExpenses', function (req, res,next) {
     verify_token.verify(req.session.token,function(err, decoded) {
         if (!err && decoded.tag == 'admin') {
             amt = req.body.amount.toPrecision(4);
-            var data = {
-              username:req.body.username,
-              description: req.body.description,
-              amount: amt,
-              datetimee:req.body.datetimee
-            };
-            data.username = decoded.user;
-            mysql.putUserExpense(data,function (model) {
-                if(model == null){
-                    res.json({statusCode : 200 , message:"data not stored"})
-                }else{
-                    res.json({statusCode : 200 , message:"data stored"})
-                    res.render('pages/admin_dashboard');
-                }
-            })
-
+            if (req.body.username == decoded.user){
+                var data = {
+                  username:req.body.username,
+                  description: req.body.description,
+                  amount: amt,
+                  datetimee:req.body.datetimee
+                };
+                data.username = decoded.user;
+                mysql.putUserExpense(data,function (model) {
+                    if(model == null){
+                        res.json({statusCode : 200 , message:"data not stored"})
+                    }else{
+                        res.json({statusCode : 200 , message:"data stored"})
+                        res.render('pages/admin_dashboard');
+                    }
+                })
+            }
+            else {
+            console.log(err);
+            res.json({statusCode: 200, message: " invalid user ", data: null});
+            }
         }
         else {
             console.log(err);
@@ -58,6 +63,8 @@ admin.post('/addExpenses', function (req, res,next) {
         }
     });
 });
+
+
 
 
 //Remove Expenses
