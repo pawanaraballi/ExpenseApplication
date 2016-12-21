@@ -35,6 +35,30 @@ user.post('/addExpenses', function (req, res,next) {
     verify_token.verify(req.session.token,function(err, decoded) {
         if (!err && decoded.tag == 'user') {
             amt = req.body.amount.toPrecision(4);
+            console.log("I am old");
+            console.log(req.body.datetimee);
+            if(req.body.datetimee == ""){
+             if (req.body.username == decoded.user){
+                var data = {
+                  username:req.body.username,
+                  description: req.body.description,
+                  amount: amt
+                };
+                data.username = decoded.user;
+                mysql.putUserExpense(data,function (model) {
+                    if(model == null){
+                        res.json({statusCode : 200 , message:"data not stored"})
+                    }else{
+                        res.json({statusCode : 200 , message:"data stored"})
+                        res.render('pages/user_dashboard');
+                    }
+                })
+            }
+            else {
+            console.log(err);
+            res.json({statusCode: 200, message: " invalid user ", data: null});
+            }   
+        }else{
             if (req.body.username == decoded.user){
                 var data = {
                   username:req.body.username,
@@ -56,6 +80,8 @@ user.post('/addExpenses', function (req, res,next) {
             console.log(err);
             res.json({statusCode: 200, message: " invalid user ", data: null});
             }
+        }
+            
         }
         else {
             console.log(err);
