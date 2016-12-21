@@ -6,7 +6,7 @@ var casper = require('casper').create({
     }
 });
 
-//First step is to open Amazon
+//First step is to open Login
 casper.start().thenOpen("http://localhost:3000/login", function() {
     console.log("Login Page");
 });
